@@ -1,0 +1,23 @@
+{
+    "name": "@npm-node/tplhb",
+    "version": "0.0.0",
+    "description": "express项目中handlebars模板处理",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/npm-node/tplhb.git"
+    },
+    "keywords": [
+        "express",
+        "handlebars"
+    ],
+    "author": "yanxianping",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/npm-node/tplhb/issues"
+    },
+    "homepage": "https://github.com/npm-node/tplhb#readme",
+    "dependencies": {
+        "handlebars": "^4.7.6"
+    }
+}
