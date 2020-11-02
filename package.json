@@ -1,6 +1,6 @@
 {
     "name": "@npm-node/tplhb",
-    "version": "0.0.0",
+    "version": "0.0.0-alpha",
     "description": "express项目中handlebars模板处理",
     "main": "index.js",
     "repository": {

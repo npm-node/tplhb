@@ -23,7 +23,6 @@ let templateCache = {};
  * @return {Promise<Object>} 编译好的html字符串
  */
 function getHtml(path, options) {
-    console.log('========>', path);
     let html = '';
     return new Promise((resolve, reject) => {
         try {
@@ -35,7 +34,7 @@ function getHtml(path, options) {
                 // TODO ！！！important 替换模板中的css和js版本
                 let templateString = fs.readFileSync(path).toString();
                 template = Handlebars.compile(templateString);
-                caches[path] = template;
+                templateCache[path] = template;
             }
             // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             // (start) : 添加一些脚本（报错捕获），Vue分割符...
