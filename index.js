@@ -6,6 +6,7 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const Handlebars = require('handlebars');
 
 // 用户定义配置
@@ -13,8 +14,60 @@ const OPTIONS = {};
 // 模板缓存
 let templateCache = {};
 
-// TODO 注册handlebars的helper
-// TODO 注册handlebars的partial
+/**
+ * 注册handlebars的helper
+ * @param helpers <{key<string>:value<function>}>
+ */
+function registerHelpers(helpers = {}) {
+    for (let key in helpers) {
+        try {
+            if (typeof helpers[key] === "function") {
+                Handlebars.unregisterHelper(key);
+                Handlebars.registerHelper(key, helpers[key]);
+            } else {
+                // noinspection ExceptionCaughtLocallyJS
+                throw new Error('handlebars helper must be a function');
+            }
+        } catch (e) {
+            console.log('【registerHelpers】', e);
+        }
+    }
+}
+
+/**
+ * 注册handlebars的partial
+ * @param partialPath <string> partial绝对路径
+ */
+function registerPartials(partialPath) {
+    // 入口文件夹路径
+    const entryDirPath = path.resolve(OPTIONS.viewsPath, OPTIONS.partialsDirectoryName);
+    try {
+        let filesList = fs.readdirSync(partialPath);
+        filesList.forEach(item => {
+            let itemPath = path.resolve(partialPath, item);
+            let fileStats = fs.statSync(itemPath);
+            if (fileStats.isDirectory()) {
+                registerPartials(itemPath);
+            } else if (fileStats.isFile()) {
+                let partialRelativePath = path.relative(entryDirPath, itemPath);
+                let ext = path.extname(partialRelativePath);
+                let hbRegExp = /\.(hb)$/;
+                if (hbRegExp.test(ext)) {
+                    let sep = path.sep;
+                    let partialName = partialRelativePath.replace(ext, '').replace(sep, '/');
+                    let partialTemplate = fs.readFileSync(itemPath, 'utf-8');
+                    Handlebars.unregisterPartial(partialName);
+                    Handlebars.registerPartial(partialName, partialTemplate);
+                }
+            } else {
+                // 其他
+                throw new Error(`the path of '${itemPath}' is not a directory or a file`);
+            }
+        });
+    } catch (e) {
+        console.log('【registerPartials】', e);
+    }
+}
 
 /**
  * 获取编译后的html字符串
@@ -80,6 +133,8 @@ const tplHb = (app, options = {
     getTemplateFromCache: false
 }) => {
     Object.assign(OPTIONS, options);
+    registerHelpers(options.helpers);
+    registerPartials(path.resolve(OPTIONS.viewsPath, OPTIONS.partialsDirectoryName));
 
     app.set('views', options.viewsPath);
     app.engine('hb', appEngineCallback);

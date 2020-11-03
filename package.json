@@ -1,8 +1,11 @@
 {
     "name": "@npm-node/tplhb",
-    "version": "0.0.0-alpha",
+    "version": "0.0.1-alpha",
     "description": "express项目中handlebars模板处理",
     "main": "index.js",
+    "scripts": {
+        "test": "node ./test/index.test.js"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/npm-node/tplhb.git"
